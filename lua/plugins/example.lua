@@ -109,6 +109,21 @@ return {
             },
           },
         },
+        gopls = {
+          -- Enable enhanced autocompletion and function signatures
+          experimentalPostfixCompletions = true,
+          usePlaceholders = true,
+          completeUnimported = true,
+          analyses = {
+            unusedparams = true,
+            shadow = true,
+          },
+          staticcheck = true,
+          -- Additional hover information and completion details
+          hints = {
+            parameterNames = true,
+          },
+        },
         tsserver = {},
       },
       on_attach = function(client, bufnr)
@@ -157,6 +172,7 @@ return {
         "typescript",
         "vim",
         "yaml",
+        "go",
       },
     },
   },
@@ -204,6 +220,7 @@ return {
         "shellcheck",
         "shfmt",
         "flake8",
+        "gopls",
       },
     },
   },
@@ -220,9 +237,7 @@ return {
   -- then: setup supertab in cmp
   {
     "hrsh7th/nvim-cmp",
-    dependencies = {
-      "hrsh7th/cmp-emoji",
-    },
+    dependencies = { "hrsh7th/cmp-emoji" },
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       local has_words_before = function()
@@ -233,6 +248,10 @@ return {
 
       local luasnip = require("luasnip")
       local cmp = require("cmp")
+
+      -- Add emoji and other sources for Go
+      table.insert(opts.sources, { name = "emoji" })
+      table.insert(opts.sources, { name = "nvim_lsp" })
 
       opts.mapping = vim.tbl_extend("force", opts.mapping, {
         ["<Tab>"] = cmp.mapping(function(fallback)
